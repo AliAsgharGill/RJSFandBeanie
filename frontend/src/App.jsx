@@ -2,17 +2,7 @@ import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import axios from "axios";
 import { Button } from "@mui/material";
-
-// Define the schema (JSON schema)
-const schema = {
-  title: "User Form",
-  type: "object",
-  properties: {
-    name: { type: "string", title: "Name" },
-    age: { type: "integer", title: "Age" },
-  },
-  required: ["name", "age"],
-};
+import schema from "./schema.json";
 
 // Define the UI schema for Material UI (for styling)
 const uiSchema = {
