@@ -2,57 +2,106 @@ import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import axios from "axios";
 import { Button } from "@mui/material";
-import schema from "./schema.json";
+import { useEffect, useState } from "react";
 
-// Define the UI schema for Material UI (for styling)
-const uiSchema = {
-  "firstName": {
-    "ui:autofocus": true,
-    "ui:emptyValue": "",
-    "ui:placeholder": "ui:emptyValue causes this field to always be valid despite being required",
-    "ui:autocomplete": "family-name",
-    "ui:enableMarkdownInDescription": true,
-    "ui:description": "Make text **bold** or *italic*. Take a look at other options [here](https://markdown-to-jsx.quantizor.dev/)."
-  },
-  "lastName": {
-    "ui:autocomplete": "given-name",
-    "ui:enableMarkdownInDescription": true,
-    "ui:description": "Make things **bold** or *italic*. Embed snippets of `code`. <small>And this is a small texts.</small> "
-  },
-  "age": {
-    "ui:widget": "updown",
-    "ui:title": "Age of person",
-    "ui:description": "(earth year)"
-  },
-  "bio": {
-    "ui:widget": "textarea"
-  },
-  "password": {
-    "ui:widget": "password",
-    "ui:help": "Hint: Make it strong!"
-  },
-  "telephone": {
-    "ui:options": {
-      "inputType": "tel"
-    }
-  }
-}
+const baseURL = "http://localhost:8000";
 
 function App() {
+  const [rjsfSchema, setRjsfSchema] = useState(null);
+  const [uiSchema, setUiSchema] = useState(null);
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  const getUser = async () => {
+    const userId = "674ed3213d4cedfa7fe0d047";
+    try {
+      const response = await axios.get(`${baseURL}/api/users/${userId}`);
+      const { form_fields, uiSchema } = response.data || {};
+      console.log("User data:", response.data);
+      // Check if form_fields exist
+      if (!form_fields || typeof form_fields !== "object") {
+        throw new Error("form_fields is missing or invalid in the response");
+      }
+
+      // Convert form_fields to RJSF schema
+      const rjsfSchema = convertToRjsfSchema(form_fields);
+
+      // Update state
+      setRjsfSchema(rjsfSchema);
+      setUiSchema(uiSchema || {}); // Default to an empty object if uiSchema is missing
+    } catch (error) {
+      console.error("Error fetching user data:", error.message);
+    }
+  };
+
+
+  const convertToRjsfSchema = (formFields) => {
+    if (!formFields || typeof formFields !== "object") {
+      throw new Error("Invalid formFields input");
+    }
+
+    const properties = {};
+    const requiredFields = [];
+
+    Object.keys(formFields).forEach((field) => {
+      const fieldType = formFields[field];
+      let type;
+
+      // Map backend types to JSON Schema types
+      switch (fieldType) {
+        case "str":
+          type = "string";
+          break;
+        case "int":
+          type = "integer";
+          break;
+        case "Optional":
+          type = "string"; // Optional fields are usually strings
+          break;
+        default:
+          console.warn(`Unknown field type: ${fieldType}`);
+          type = "string";
+      }
+
+      properties[field] = { type, title: toTitleCase(field.replace("_", " ")) };
+
+      // Add to required if not optional
+      if (fieldType !== "Optional") {
+        requiredFields.push(field);
+      }
+    });
+
+    return {
+      title: "User Form",
+      type: "object",
+      properties,
+      required: requiredFields,
+    };
+  };
+
+
+  const toTitleCase = (str) =>
+    str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.slice(1));
+
   const handleSubmit = async ({ formData }) => {
     try {
-      const response = await axios.post("http://localhost:8000/api/users", formData);
+      const response = await axios.post(`${baseURL}/api/users`, formData);
       console.log("Form submitted successfully:", response.data);
     } catch (error) {
       console.error("Error submitting form:", error.message);
     }
   };
 
+  if (!rjsfSchema || !uiSchema) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <div className="App">
-      {/* <h1>User Form</h1> */}
       <Form
-        schema={schema}
+        schema={rjsfSchema}
         uiSchema={uiSchema}
         validator={validator}
         onSubmit={handleSubmit}

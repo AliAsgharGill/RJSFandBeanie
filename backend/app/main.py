@@ -32,7 +32,6 @@ async def create_user(user: UserSchema):
             for field, field_type in UserSchema.__annotations__.items()
         }
 
-        # Example uiSchema
         uiSchema = {
             "first_name": {
                 "ui:autofocus": True,
@@ -62,7 +61,6 @@ async def create_user(user: UserSchema):
             },
         }
 
-        # Create a new user document
         new_user = User(
             form_fields=form_fields,
             uiSchema=uiSchema,
