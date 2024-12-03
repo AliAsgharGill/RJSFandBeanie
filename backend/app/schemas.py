@@ -1,6 +1,7 @@
-# Define the Pydantic schema for FastAPI validation.
 from pydantic import BaseModel
+from typing import Optional
 
 class UserSchema(BaseModel):
     name: str
-    age: int
+    age: Optional[int]
+    is_active: bool
