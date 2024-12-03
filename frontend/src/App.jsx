@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import axios from "axios";
-import './App.css';
-import { Button } from '@mui/material';
-import { TextFieldWidget } from '../components/MUI/TextFieldWidget';
-import { SelectWidget } from '../components/MUI/SelectWidget';
-import { PasswordWidget } from '../components/MUI/PasswordWidget';
-import { TextareaWidget } from '../components/MUI/Textarea Widget';
-import { UpdownWidget } from '../components/MUI/UpdownWidget';
+import "./App.css";
+import { Button } from "@mui/material";
+import { TextFieldWidget } from "../components/MUI/TextFieldWidget";
+import { SelectWidget } from "../components/MUI/SelectWidget";
+import { PasswordWidget } from "../components/MUI/PasswordWidget";
+import { TextareaWidget } from "../components/MUI/Textarea Widget";
+import { UpdownWidget } from "../components/MUI/UpdownWidget";
 
 const baseURL = "http://localhost:8000";
 
@@ -21,7 +21,7 @@ function App() {
   }, []);
 
   const getUser = async () => {
-    const userId = "674ed3213d4cedfa7fe0d047";
+    const userId = "674ed4053d4cedfa7fe0d048";
     try {
       const response = await axios.get(`${baseURL}/api/users/${userId}`);
       const { form_fields, uiSchema } = response.data || {};
@@ -79,7 +79,7 @@ function App() {
 
   const handleSubmit = async ({ formData }) => {
     try {
-      const userId = "674ed3213d4cedfa7fe0d047";
+      const userId = "674ed4053d4cedfa7fe0d048";
       const response = await axios.post(`${baseURL}/api/user-submissions`, {
         userId,
         submission: formData,
@@ -89,6 +89,12 @@ function App() {
       console.error("Error submitting form:", error.message);
     }
   };
+
+  const CustomSubmitButton = () => (
+    <Button variant="contained" color="primary" fullWidth type="submit">
+      Submit
+    </Button>
+  );
 
   if (!rjsfSchema || !uiSchema) {
     return <p>Loading...</p>;
@@ -107,12 +113,12 @@ function App() {
           SelectWidget: SelectWidget,
           PasswordWidget: PasswordWidget,
           TextareaWidget: TextareaWidget,
-          UpdownWidget: UpdownWidget,
-          SubmitButton: () => (
-            <Button variant="contained" color="primary" fullWidth type="submit">
-              Submit
-            </Button>
-          ),
+          updown: UpdownWidget,
+        }}
+        templates={{
+          ButtonTemplates: {
+            SubmitButton: CustomSubmitButton,
+          },
         }}
       />
     </div>
