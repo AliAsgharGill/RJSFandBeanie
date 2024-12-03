@@ -2,9 +2,13 @@ from fastapi import FastAPI, HTTPException
 from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
 from fastapi.middleware.cors import CORSMiddleware
-from app.models import User
+from app.models import User, UserSubmission
 from app.schemas import UserSchema
+from datetime import datetime
 import json
+from pydantic import BaseModel
+from typing import Dict, Any
+
 
 app = FastAPI()
 
@@ -21,7 +25,7 @@ app.add_middleware(
 async def startup():
     # Initialize the database connection
     client = AsyncIOMotorClient("mongodb://localhost:27017")
-    await init_beanie(database=client.my_database, document_models=[User])
+    await init_beanie(database=client.my_database, document_models=[User, UserSubmission])
 
 @app.post("/api/users")
 async def create_user(user: UserSchema):
@@ -70,6 +74,30 @@ async def create_user(user: UserSchema):
         return {"message": "User created successfully!"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error creating user: {str(e)}")
+
+
+class SubmissionData(BaseModel):
+    userId: str  # User ID as a string
+    submission: Dict[str, Any]  # Form submission data as a dictionary
+
+@app.post("/api/user-submissions")
+async def create_user_submission(submission_data: SubmissionData):
+    user_id = submission_data.userId
+    form_data = submission_data.submission
+
+    # Ensure the user exists
+    user = await User.get(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Create a new submission
+    new_submission = UserSubmission(
+        user_id=user_id,
+        submission=form_data,
+    )
+    await new_submission.insert()
+
+    return {"message": "Submission stored successfully!"}
 
 
 @app.get("/api/users/{user_id}")

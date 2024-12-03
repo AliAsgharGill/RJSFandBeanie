@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 
+
 class UserSchema(BaseModel):
     first_name: str
     last_name: str
@@ -8,3 +9,4 @@ class UserSchema(BaseModel):
     bio: Optional[str]
     password: str
     telephone: str
+    userId: str

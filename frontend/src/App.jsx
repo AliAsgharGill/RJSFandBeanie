@@ -58,7 +58,7 @@ function App() {
           type = "integer";
           break;
         case "Optional":
-          type = "string"; // Optional fields are usually strings
+          type = "string";
           break;
         default:
           console.warn(`Unknown field type: ${fieldType}`);
@@ -87,12 +87,17 @@ function App() {
 
   const handleSubmit = async ({ formData }) => {
     try {
-      const response = await axios.post(`${baseURL}/api/users`, formData);
-      console.log("Form submitted successfully:", response.data);
+      const userId = "674ed3213d4cedfa7fe0d047"; // Pass the userId dynamically if required
+      const response = await axios.post(`${baseURL}/api/user-submissions`, {
+        userId,      // Link to the user
+        submission: formData, // Submitted form data
+      });
+      console.log("Submission stored successfully:", response.data);
     } catch (error) {
       console.error("Error submitting form:", error.message);
     }
   };
+  
 
   if (!rjsfSchema || !uiSchema) {
     return <p>Loading...</p>;
