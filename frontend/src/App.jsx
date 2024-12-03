@@ -3,6 +3,7 @@ import validator from "@rjsf/validator-ajv8";
 import axios from "axios";
 import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
+import './App.css';
 
 const baseURL = "http://localhost:8000";
 
@@ -97,7 +98,7 @@ function App() {
       console.error("Error submitting form:", error.message);
     }
   };
-  
+
 
   if (!rjsfSchema || !uiSchema) {
     return <p>Loading...</p>;
