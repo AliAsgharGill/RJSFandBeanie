@@ -1,12 +1,9 @@
-from typing import Optional
+from typing import Optional, Dict
 from beanie import Document
 
 class User(Document):
-    # name: str
-    # age: Optional[int]
-    # is_active: bool
-    # schema: dict  # Store the schema as a JSON field
-    field_types: dict  # Store field types dynamically
+    form_fields: Dict[str, str]
+    uiSchema: Dict = {}
 
     class Settings:
         collection = "users"

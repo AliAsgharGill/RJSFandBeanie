@@ -6,23 +6,37 @@ import schema from "./schema.json";
 
 // Define the UI schema for Material UI (for styling)
 const uiSchema = {
-  name: {
-    "ui:widget": "text", // text input field
-    "ui:placeholder": "Enter your name",
+  "firstName": {
+    "ui:autofocus": true,
+    "ui:emptyValue": "",
+    "ui:placeholder": "ui:emptyValue causes this field to always be valid despite being required",
+    "ui:autocomplete": "family-name",
+    "ui:enableMarkdownInDescription": true,
+    "ui:description": "Make text **bold** or *italic*. Take a look at other options [here](https://markdown-to-jsx.quantizor.dev/)."
   },
-  age: {
-    "ui:widget": "updown", // number input field
-    "ui:placeholder": "Enter your age",
+  "lastName": {
+    "ui:autocomplete": "given-name",
+    "ui:enableMarkdownInDescription": true,
+    "ui:description": "Make things **bold** or *italic*. Embed snippets of `code`. <small>And this is a small texts.</small> "
   },
-  submit: {
-    "ui:widget": "submit",
+  "age": {
+    "ui:widget": "updown",
+    "ui:title": "Age of person",
+    "ui:description": "(earth year)"
+  },
+  "bio": {
+    "ui:widget": "textarea"
+  },
+  "password": {
+    "ui:widget": "password",
+    "ui:help": "Hint: Make it strong!"
+  },
+  "telephone": {
     "ui:options": {
-      label: "Submit",
-      backgroundColor: "#4a90e2",
-      color: "white",
-    },
-  },
-};
+      "inputType": "tel"
+    }
+  }
+}
 
 function App() {
   const handleSubmit = async ({ formData }) => {
@@ -36,7 +50,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>User Form</h1>
+      {/* <h1>User Form</h1> */}
       <Form
         schema={schema}
         uiSchema={uiSchema}

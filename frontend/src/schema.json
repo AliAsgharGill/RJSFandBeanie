@@ -2,9 +2,12 @@
   "title": "User Form",
   "type": "object",
   "properties": {
-    "name": { "type": "string", "title": "Name" },
+    "first_name": { "type": "string", "title": "First Name" },
+    "last_name": { "type": "string", "title": "Last Name" },
     "age": { "type": "integer", "title": "Age" },
-    "is_active": { "type": "boolean", "title": "Is Active" }
+    "bio": { "type": "string", "title": "Bio" },
+    "password": { "type": "string", "title": "Password" },
+    "telephone": { "type": "string", "title": "Telephone" }
   },
-  "required": ["name", "age"]
+  "required": ["first_name", "last_name", "password", "telephone"]
 }

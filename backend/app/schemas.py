@@ -1,7 +1,10 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Optional
 
 class UserSchema(BaseModel):
-    name: str
-    age: Optional[int]
-    is_active: bool
+    first_name: str
+    last_name: str
+    age: int
+    bio: Optional[str]
+    password: str
+    telephone: str
