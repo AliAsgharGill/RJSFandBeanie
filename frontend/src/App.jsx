@@ -1,9 +1,14 @@
+import { useState, useEffect } from 'react';
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
 import axios from "axios";
-import { Button } from "@mui/material";
-import { useEffect, useState } from "react";
 import './App.css';
+import { Button } from '@mui/material';
+import { TextFieldWidget } from '../components/MUI/TextFieldWidget';
+import { SelectWidget } from '../components/MUI/SelectWidget';
+import { PasswordWidget } from '../components/MUI/PasswordWidget';
+import { TextareaWidget } from '../components/MUI/Textarea Widget';
+import { UpdownWidget } from '../components/MUI/UpdownWidget';
 
 const baseURL = "http://localhost:8000";
 
@@ -21,28 +26,18 @@ function App() {
       const response = await axios.get(`${baseURL}/api/users/${userId}`);
       const { form_fields, uiSchema } = response.data || {};
       console.log("User data:", response.data);
-      // Check if form_fields exist
       if (!form_fields || typeof form_fields !== "object") {
         throw new Error("form_fields is missing or invalid in the response");
       }
-
-      // Convert form_fields to RJSF schema
       const rjsfSchema = convertToRjsfSchema(form_fields);
-
-      // Update state
       setRjsfSchema(rjsfSchema);
-      setUiSchema(uiSchema || {}); // Default to an empty object if uiSchema is missing
+      setUiSchema(uiSchema || {});
     } catch (error) {
       console.error("Error fetching user data:", error.message);
     }
   };
 
-
   const convertToRjsfSchema = (formFields) => {
-    if (!formFields || typeof formFields !== "object") {
-      throw new Error("Invalid formFields input");
-    }
-
     const properties = {};
     const requiredFields = [];
 
@@ -50,7 +45,6 @@ function App() {
       const fieldType = formFields[field];
       let type;
 
-      // Map backend types to JSON Schema types
       switch (fieldType) {
         case "str":
           type = "string";
@@ -67,8 +61,6 @@ function App() {
       }
 
       properties[field] = { type, title: toTitleCase(field.replace("_", " ")) };
-
-      // Add to required if not optional
       if (fieldType !== "Optional") {
         requiredFields.push(field);
       }
@@ -82,23 +74,21 @@ function App() {
     };
   };
 
-
   const toTitleCase = (str) =>
     str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.slice(1));
 
   const handleSubmit = async ({ formData }) => {
     try {
-      const userId = "674ed3213d4cedfa7fe0d047"; // Pass the userId dynamically if required
+      const userId = "674ed3213d4cedfa7fe0d047";
       const response = await axios.post(`${baseURL}/api/user-submissions`, {
-        userId,      // Link to the user
-        submission: formData, // Submitted form data
+        userId,
+        submission: formData,
       });
       console.log("Submission stored successfully:", response.data);
     } catch (error) {
       console.error("Error submitting form:", error.message);
     }
   };
-
 
   if (!rjsfSchema || !uiSchema) {
     return <p>Loading...</p>;
@@ -113,6 +103,11 @@ function App() {
         onSubmit={handleSubmit}
         showErrorList={false}
         widgets={{
+          TextWidget: TextFieldWidget,
+          SelectWidget: SelectWidget,
+          PasswordWidget: PasswordWidget,
+          TextareaWidget: TextareaWidget,
+          UpdownWidget: UpdownWidget,
           SubmitButton: () => (
             <Button variant="contained" color="primary" fullWidth type="submit">
               Submit
