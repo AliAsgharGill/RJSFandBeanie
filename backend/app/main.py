@@ -99,6 +99,21 @@ async def create_user_submission(submission_data: SubmissionData):
 
     return {"message": "Submission stored successfully!"}
 
+@app.get("/api/user-submissions/{user_id}")
+async def get_user_submissions(user_id: str):
+    # Ensure the user exists
+    user = await User.get(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Fetch all submissions related to the user
+    submissions = await UserSubmission.find({"user_id": user_id}).to_list()
+
+    if not submissions:
+        raise HTTPException(status_code=404, detail="No submissions found for this user")
+
+    return {"user_id": user_id, "submissions": submissions}
+
 
 @app.get("/api/users/{user_id}")
 async def get_user(user_id: str):
@@ -106,3 +121,4 @@ async def get_user(user_id: str):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return {"form_fields": user.form_fields, "uiSchema": user.uiSchema}
+
