@@ -15,27 +15,52 @@ const baseURL = "http://localhost:8000";
 function App() {
   const [rjsfSchema, setRjsfSchema] = useState(null);
   const [uiSchema, setUiSchema] = useState(null);
+  const [formData, setFormData] = useState(null);
 
   useEffect(() => {
-    getUser();
+    getUserAndSubmissions();
   }, []);
 
-  const getUser = async () => {
-    const userId = "674ed4053d4cedfa7fe0d048";
+  const getUserAndSubmissions = async () => {
+    const userId = "674ed4053d4cedfa7fe0d048"; // Schema user ID
+    const targetSubmissionId = "674f0bbccae5b08e3e3e477c"; // Target submission ID
+
     try {
-      const response = await axios.get(`${baseURL}/api/users/${userId}`);
-      const { form_fields, uiSchema } = response.data || {};
-      console.log("User data:", response.data);
+      // Fetch user schema
+      const userResponse = await axios.get(`${baseURL}/api/users/${userId}`);
+      const { form_fields, uiSchema } = userResponse.data || {};
+      console.log("User data:", userResponse.data);
+
       if (!form_fields || typeof form_fields !== "object") {
         throw new Error("form_fields is missing or invalid in the response");
       }
+
       const rjsfSchema = convertToRjsfSchema(form_fields);
       setRjsfSchema(rjsfSchema);
       setUiSchema(uiSchema || {});
+
+      // Fetch user submissions
+      const submissionsResponse = await axios.get(
+        `${baseURL}/api/user-submissions/${userId}`
+      );
+      const submissions = submissionsResponse.data?.submissions || [];
+      console.log("User submissions:", submissions);
+
+      // Find the submission with the specified ID
+      const targetSubmission = submissions.find(
+        (submission) => submission._id === targetSubmissionId
+      );
+
+      if (targetSubmission) {
+        setFormData(targetSubmission.submission);
+      } else {
+        console.warn(`Submission with ID ${targetSubmissionId} not found.`);
+      }
     } catch (error) {
-      console.error("Error fetching user data:", error.message);
+      console.error("Error fetching user data or submissions:", error.message);
     }
   };
+
 
   const convertToRjsfSchema = (formFields) => {
     const properties = {};
@@ -106,6 +131,7 @@ function App() {
         schema={rjsfSchema}
         uiSchema={uiSchema}
         validator={validator}
+        formData={formData}
         onSubmit={handleSubmit}
         showErrorList={false}
         widgets={{
