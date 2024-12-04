@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, status
 from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,7 +8,14 @@ from datetime import datetime
 import json
 from pydantic import BaseModel
 from typing import Dict, Any
-
+from fastapi.responses import StreamingResponse
+from io import BytesIO
+from jinja2 import Template
+import os
+from docx import Document
+from bson import ObjectId
+from fastapi.responses import FileResponse
+import os
 
 app = FastAPI()
 
@@ -21,11 +28,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Define the collection for jinja_templates
+jinja_templates = None
+
 @app.on_event("startup")
 async def startup():
     # Initialize the database connection
     client = AsyncIOMotorClient("mongodb://localhost:27017")
-    await init_beanie(database=client.my_database, document_models=[User, UserSubmission])
+    db = client.my_database
+
+    # Initialize collections
+    global jinja_templates
+    jinja_templates = db.jinja_templates  # Accessing the jinja_templates collection
+    await init_beanie(database=db, document_models=[User, UserSubmission])
+    
+    
 
 @app.post("/api/users")
 async def create_user(user: UserSchema):
@@ -85,3 +102,66 @@ async def get_user_submissions(user_id: str):
         raise HTTPException(status_code=404, detail="No submissions found for this user")
 
     return {"user_id": user_id, "submissions": submissions}
+
+
+# API to generate Word document
+@app.get("/api/generate-word/{submission_id}")
+async def generate_word(submission_id: str):
+    try:
+        # Fetch the user submission based on the submission ID
+        submission = await UserSubmission.get(submission_id)
+        if not submission:
+            raise HTTPException(status_code=404, detail="Submission not found")
+
+        # Fetch the template from the database
+        template_document = await jinja_templates.find_one({"template_name": "user_submission_template"})
+        if not template_document:
+            raise HTTPException(status_code=404, detail="Template not found")
+
+        # Extract the template content
+        template_content = template_document["template_content"]
+        
+        # Use Jinja2 to render the template with submission data
+        jinja_template = Template(template_content)
+        rendered_content = jinja_template.render(
+            user_id=submission.user_id,
+            submission=submission.submission,
+            created_at=submission.created_at
+        )
+
+        # Generate Word document from rendered content
+        doc = Document()
+        doc.add_paragraph(rendered_content)
+
+        # Save the document to a BytesIO object
+        word_file = BytesIO()
+        doc.save(word_file)
+        word_file.seek(0)
+
+        # Return the Word file as a streaming response
+        return StreamingResponse(word_file, media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document", headers={"Content-Disposition": "attachment; filename=user_submission.docx"})
+    
+    except Exception as e:
+        print(f"Error: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Internal Server Error: {e}")
+
+# Helper function to generate the Word document
+def generate_word_document(submission, template_content):
+    # Use Jinja2 to render the template with submission data
+    jinja_template = Template(template_content)
+    rendered_content = jinja_template.render(
+        user_id=submission.user_id,
+        submission=submission.submission,
+        created_at=submission.created_at
+    )
+
+    # Generate Word document from rendered content
+    doc = Document()
+    doc.add_paragraph(rendered_content)
+
+    # Save the document to a BytesIO object
+    word_file = BytesIO()
+    doc.save(word_file)
+    word_file.seek(0)
+
+    return word_file
