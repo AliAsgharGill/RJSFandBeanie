@@ -22,14 +22,13 @@ function App() {
   }, []);
 
   const getUserAndSubmissions = async () => {
-    const userId = "674ed4053d4cedfa7fe0d048"; // Schema user ID
+    const userId = "674ed4053d4cedfa7fe0d048"; // Example user ID
     const targetSubmissionId = "674f0bbccae5b08e3e3e477c"; // Target submission ID
 
     try {
       // Fetch user schema
       const userResponse = await axios.get(`${baseURL}/api/users/${userId}`);
       const { form_fields, uiSchema } = userResponse.data || {};
-      console.log("User data:", userResponse.data);
 
       if (!form_fields || typeof form_fields !== "object") {
         throw new Error("form_fields is missing or invalid in the response");
@@ -44,7 +43,6 @@ function App() {
         `${baseURL}/api/user-submissions/${userId}`
       );
       const submissions = submissionsResponse.data?.submissions || [];
-      console.log("User submissions:", submissions);
 
       // Find the submission with the specified ID
       const targetSubmission = submissions.find(
@@ -60,6 +58,7 @@ function App() {
       console.error("Error fetching user data or submissions:", error.message);
     }
   };
+
 
 
   const convertToRjsfSchema = (formFields) => {

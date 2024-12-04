@@ -30,44 +30,9 @@ async def startup():
 @app.post("/api/users")
 async def create_user(user: UserSchema):
     try:
-        # Extract field types dynamically from UserSchema
-        form_fields = {
-            field: str(field_type.__name__)
-            for field, field_type in UserSchema.__annotations__.items()
-        }
-
-        uiSchema = {
-            "first_name": {
-                "ui:autofocus": True,
-                "ui:placeholder": "Enter your first name"
-            },
-            "last_name": {
-                "ui:placeholder": "Enter your last name"
-            },
-            "age": {
-                "ui:widget": "updown",
-                "ui:title": "Age",
-                "ui:description": "Enter your age in years"
-            },
-            "bio": {
-                "ui:widget": "textarea",
-                "ui:description": "Short bio about yourself"
-            },
-            "password": {
-                "ui:widget": "password",
-                "ui:help": "Make sure your password is strong!"
-            },
-            "telephone": {
-                "ui:options": {
-                    "inputType": "tel"
-                },
-                "ui:placeholder": "Enter your phone number"
-            },
-        }
-
         new_user = User(
-            form_fields=form_fields,
-            uiSchema=uiSchema,
+            form_fields=user.dict(),
+            uiSchema=user.dict()
         )
         await new_user.insert()
 
@@ -75,6 +40,13 @@ async def create_user(user: UserSchema):
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error creating user: {str(e)}")
 
+
+@app.get("/api/users/{user_id}")
+async def get_user(user_id: str):
+    user = await User.get(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"form_fields": user.form_fields, "uiSchema": user.uiSchema}
 
 class SubmissionData(BaseModel):
     userId: str  # User ID as a string
@@ -113,12 +85,3 @@ async def get_user_submissions(user_id: str):
         raise HTTPException(status_code=404, detail="No submissions found for this user")
 
     return {"user_id": user_id, "submissions": submissions}
-
-
-@app.get("/api/users/{user_id}")
-async def get_user(user_id: str):
-    user = await User.get(user_id)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return {"form_fields": user.form_fields, "uiSchema": user.uiSchema}
-
