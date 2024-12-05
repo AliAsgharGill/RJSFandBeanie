@@ -16,6 +16,7 @@ from docx import Document
 from bson import ObjectId
 from fastapi.responses import FileResponse
 import os
+from bs4 import BeautifulSoup
 
 app = FastAPI()
 
@@ -104,7 +105,7 @@ async def get_user_submissions(user_id: str):
     return {"user_id": user_id, "submissions": submissions}
 
 
-# API to generate Word document
+
 @app.get("/api/generate-word/{submission_id}")
 async def generate_word(submission_id: str):
     try:
@@ -120,18 +121,23 @@ async def generate_word(submission_id: str):
 
         # Extract the template content
         template_content = template_document["template_content"]
-        
+
         # Use Jinja2 to render the template with submission data
         jinja_template = Template(template_content)
-        rendered_content = jinja_template.render(
+        rendered_html = jinja_template.render(
             user_id=submission.user_id,
             submission=submission.submission,
             created_at=submission.created_at
         )
 
-        # Generate Word document from rendered content
+        # Strip HTML and ensure proper line breaks
+        soup = BeautifulSoup(rendered_html, "html.parser")
+        plain_text = soup.get_text(separator="\n")  # Add newlines between elements
+
+        # Generate Word document from formatted text
         doc = Document()
-        doc.add_paragraph(rendered_content)
+        for line in plain_text.split("\n"):  # Add each line as a new paragraph
+            doc.add_paragraph(line.strip())
 
         # Save the document to a BytesIO object
         word_file = BytesIO()
@@ -144,6 +150,7 @@ async def generate_word(submission_id: str):
     except Exception as e:
         print(f"Error: {e}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Internal Server Error: {e}")
+
 
 # Helper function to generate the Word document
 def generate_word_document(submission, template_content):
