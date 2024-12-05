@@ -13,9 +13,6 @@ from io import BytesIO
 from jinja2 import Template
 import os
 from docx import Document
-from bson import ObjectId
-from fastapi.responses import FileResponse
-import os
 from bs4 import BeautifulSoup
 
 app = FastAPI()

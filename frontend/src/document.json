@@ -1,0 +1,104 @@
+{
+  "id": "67516444b13525684855bde9",
+  "created_at": "2024-12-05T10:30:45Z",
+  "updated_at": "2024-12-05T10:30:45Z",
+
+  "submission": {
+    "first_name": "Ali",
+    "last_name": "Asghar",
+    "telephone": "1234567890",
+    "age": 24,
+    "bio": "Software Engineer"
+  },
+
+  "generated_output": "Dear Ali Asghar,\n\nThank you for your submission. We have received your bio stating you are a Software Engineer. Your telephone number is 1234567890, and you are 24 years old.\n\nBest regards,\nThe Team",
+
+  "json_schema": {
+    "type": "object",
+    "title": "Submission",
+    "properties": {
+      "first_name": {
+        "type": "string",
+        "title": "First Name",
+        "minLength": 1
+      },
+      "last_name": {
+        "type": "string",
+        "title": "Last Name",
+        "minLength": 1
+      },
+      "telephone": {
+        "type": "string",
+        "title": "Telephone",
+        "pattern": "^[0-9]{10}$",
+        "description": "10-digit telephone number"
+      },
+      "age": {
+        "type": "integer",
+        "title": "Age",
+        "minimum": 1,
+        "maximum": 120
+      },
+      "bio": {
+        "type": "string",
+        "title": "Bio",
+        "description": "Short description about yourself"
+      },
+      "created_at": {
+        "type": "string",
+        "format": "date-time",
+        "title": "Created At"
+      }
+    },
+    "required": ["first_name", "last_name", "telephone", "age", "bio"]
+  },
+
+  "ui_schema": {
+    "first_name": {
+      "ui:placeholder": "Enter your first name",
+      "ui:autofocus": true
+    },
+    "last_name": {
+      "ui:placeholder": "Enter your last name"
+    },
+    "telephone": {
+      "ui:widget": "tel",
+      "ui:placeholder": "03123456789"
+    },
+    "age": {
+      "ui:widget": "updown",
+      "ui:help": "Enter your age"
+    },
+    "bio": {
+      "ui:widget": "textarea",
+      "ui:placeholder": "Write a short bio"
+    },
+    "created_at": {
+      "ui:widget": "hidden"
+    }
+  },
+
+  "metadata": {
+    "generated_at": "2024-12-05T10:30:45Z",
+    "updated_at": "2024-12-05T10:30:45Z",
+    "template_used": "user_submission_template",
+    "api_version": "1.0",
+    "request_id": "abc123xyz789"
+  },
+
+  "templates": {
+    "user_submission_template": {
+      "name": "user_submission_template",
+      "description": "A template for generating a personalized response for user submissions",
+      "content": "<h1>Dear {{ submission.first_name }} {{ submission.last_name }},</h1>\n<p>Thank you for your submission. We have received your bio stating you are a {{ submission.bio }}. Your telephone number is {{ submission.telephone }}, and you are {{ submission.age }} years old.</p>\n<p>Best regards,</p>\n<p>The Team</p>",
+      "created_at": "2024-12-05T10:30:45Z",
+      "updated_at": "2024-12-05T10:30:45Z"
+    },
+    "user_submission_template_detailed": {
+      "_id": "67504b3a5e059fb97f61e4f5",
+      "template_name": "user_submission_template",
+      "template_content": "<html><head><title>User Submission Details</title></head><body><h1>User Submission Details</h1><p><strong>User ID:</strong> {{ user_id }}</p><p><strong>First Name:</strong> {{ submission.first_name }}</p><p><strong>Last Name:</strong> {{ submission.last_name }}</p><p><strong>Telephone:</strong> {{ submission.telephone }}</p><p><strong>Age:</strong> {{ submission.age }}</p><p><strong>Bio:</strong> {{ submission.bio }}</p><p><strong>Submission Date:</strong> {{ created_at }}</p></body></html>",
+      "created_at": "2024-12-04T00:00:00Z"
+    }
+  }
+}

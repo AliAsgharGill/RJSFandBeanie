@@ -1,0 +1,243 @@
+{
+  "id": "67516444b13525684855bde9",
+  "created_at": "2024-12-05T10:30:45Z",
+  "updated_at": "2024-12-05T10:30:45Z",
+
+  "test_protocol": {
+    "test_name": "Test Protocol for Enigma PharmaCorp Pharmaceutical Company",
+    "protocol_number": "TP-12345",
+    "test_date": "2024-12-05",
+    "test_subject": "Chemical Compound XYZ",
+    "test_type": "Clinical Trial",
+    "test_method": "Double-Blind Randomized Controlled Trial",
+    "test_duration": "6 months",
+    "responsible_person": "Dr. Ali Asghar",
+    "company": "Enigma PharmaCorp",
+    "bio": "Test conducted to evaluate the efficacy of Chemical Compound XYZ in clinical trials.",
+    "test_phase": "Phase 2",
+    "test_results": {
+      "efficacy": "85% positive response rate",
+      "side_effects": "Nausea, dizziness, headaches",
+      "control_group_results": "70% positive response rate",
+      "summary": "The clinical trial for Chemical Compound XYZ showed a significant positive effect with a high efficacy rate compared to the control group."
+    },
+    "test_approval_status": "Approved",
+    "test_location": "Clinical Research Facility, Enigma PharmaCorp Headquarters",
+    "study_lead": "Dr. Ali Asghar",
+    "clinical_trial_id": "CTR-7891011",
+    "ethics_approval_number": "ETH-1234567",
+    "regulatory_approval_status": "Pending"
+  },
+
+  "generated_output": "Dear Dr. Ali Asghar,\n\nThank you for your submission of the Test Protocol. The test protocol titled 'Test Protocol for Pharmaceutical Company' for Chemical Compound XYZ has been received. The protocol number is TP-12345, and the test was conducted on 2024-12-05 by Enigma PharmaCorp. The test type is a Clinical Trial, and the test method used was a Double-Blind Randomized Controlled Trial.\n\nWe appreciate your submission and will proceed with the necessary steps for review.\n\nBest regards,\nThe Team",
+
+  "json_schema": {
+    "type": "object",
+    "title": "Test Protocol",
+    "properties": {
+      "test_name": {
+        "type": "string",
+        "title": "Test Name",
+        "minLength": 1
+      },
+      "protocol_number": {
+        "type": "string",
+        "title": "Protocol Number",
+        "pattern": "^[A-Za-z0-9\\-]+$",
+        "description": "Unique protocol identifier"
+      },
+      "test_date": {
+        "type": "string",
+        "format": "date",
+        "title": "Test Date"
+      },
+      "test_subject": {
+        "type": "string",
+        "title": "Test Subject"
+      },
+      "test_type": {
+        "type": "string",
+        "title": "Test Type"
+      },
+      "test_method": {
+        "type": "string",
+        "title": "Test Method"
+      },
+      "test_duration": {
+        "type": "string",
+        "title": "Test Duration"
+      },
+      "responsible_person": {
+        "type": "string",
+        "title": "Responsible Person",
+        "minLength": 1
+      },
+      "company": {
+        "type": "string",
+        "title": "Company Name",
+        "minLength": 1
+      },
+      "bio": {
+        "type": "string",
+        "title": "Protocol Bio",
+        "description": "Short description about the protocol"
+      },
+      "test_phase": {
+        "type": "string",
+        "title": "Test Phase"
+      },
+      "test_results": {
+        "type": "object",
+        "properties": {
+          "efficacy": {
+            "type": "string",
+            "title": "Efficacy"
+          },
+          "side_effects": {
+            "type": "string",
+            "title": "Side Effects"
+          },
+          "control_group_results": {
+            "type": "string",
+            "title": "Control Group Results"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          }
+        }
+      },
+      "test_approval_status": {
+        "type": "string",
+        "title": "Test Approval Status"
+      },
+      "test_location": {
+        "type": "string",
+        "title": "Test Location"
+      },
+      "study_lead": {
+        "type": "string",
+        "title": "Study Lead"
+      },
+      "clinical_trial_id": {
+        "type": "string",
+        "title": "Clinical Trial ID"
+      },
+      "ethics_approval_number": {
+        "type": "string",
+        "title": "Ethics Approval Number"
+      },
+      "regulatory_approval_status": {
+        "type": "string",
+        "title": "Regulatory Approval Status"
+      },
+      "created_at": {
+        "type": "string",
+        "format": "date-time",
+        "title": "Created At"
+      }
+    },
+    "required": [
+      "test_name",
+      "protocol_number",
+      "test_date",
+      "test_subject",
+      "test_type",
+      "test_method",
+      "test_duration",
+      "responsible_person",
+      "company",
+      "bio",
+      "test_phase"
+    ]
+  },
+
+  "ui_schema": {
+    "test_name": {
+      "ui:placeholder": "Enter test name",
+      "ui:autofocus": true
+    },
+    "protocol_number": {
+      "ui:placeholder": "Enter protocol number"
+    },
+    "test_date": {
+      "ui:widget": "date",
+      "ui:placeholder": "YYYY-MM-DD"
+    },
+    "test_subject": {
+      "ui:placeholder": "Enter test subject"
+    },
+    "test_type": {
+      "ui:placeholder": "Enter test type"
+    },
+    "test_method": {
+      "ui:placeholder": "Enter test method"
+    },
+    "test_duration": {
+      "ui:placeholder": "Enter test duration"
+    },
+    "responsible_person": {
+      "ui:placeholder": "Enter responsible person's name"
+    },
+    "company": {
+      "ui:placeholder": "Enter company name"
+    },
+    "bio": {
+      "ui:widget": "textarea",
+      "ui:placeholder": "Write a short bio"
+    },
+    "test_phase": {
+      "ui:placeholder": "Enter test phase"
+    },
+    "test_results": {
+      "ui:widget": "textarea",
+      "ui:placeholder": "Enter test results summary"
+    },
+    "test_approval_status": {
+      "ui:placeholder": "Enter approval status"
+    },
+    "test_location": {
+      "ui:placeholder": "Enter test location"
+    },
+    "study_lead": {
+      "ui:placeholder": "Enter study lead"
+    },
+    "clinical_trial_id": {
+      "ui:placeholder": "Enter clinical trial ID"
+    },
+    "ethics_approval_number": {
+      "ui:placeholder": "Enter ethics approval number"
+    },
+    "regulatory_approval_status": {
+      "ui:placeholder": "Enter regulatory approval status"
+    },
+    "created_at": {
+      "ui:widget": "hidden"
+    }
+  },
+
+  "metadata": {
+    "generated_at": "2024-12-05T10:30:45Z",
+    "updated_at": "2024-12-05T10:30:45Z",
+    "template_used": "test_protocol_template",
+    "api_version": "1.0",
+    "request_id": "abc123xyz789"
+  },
+
+  "templates": {
+    "test_protocol_template": {
+      "name": "test_protocol_template",
+      "description": "A template for generating a personalized response for test protocol submissions",
+      "content": "<h1>Dear {{ test_protocol.responsible_person }},</h1>\n<p>Thank you for your submission of the Test Protocol. The test protocol titled '{{ test_protocol.test_name }}' for {{ test_protocol.test_subject }} has been received. The protocol number is {{ test_protocol.protocol_number }}, and the test was conducted on {{ test_protocol.test_date }} by {{ test_protocol.company }}. The test type is {{ test_protocol.test_type }} and the test method used was {{ test_protocol.test_method }}. The test results showed an efficacy of {{ test_protocol.test_results.efficacy }}.</p>\n<p>We appreciate your submission and will proceed with the necessary steps for review.</p>\n<p>Best regards,</p>\n<p>The Team</p>",
+      "created_at": "2024-12-05T10:30:45Z",
+      "updated_at": "2024-12-05T10:30:45Z"
+    },
+    "test_protocol_template_detailed": {
+      "_id": "67504b3a5e059fb97f61e4f5",
+      "template_name": "test_protocol_template",
+      "template_content": "<html><head><title>Test Protocol Details</title></head><body><h1>Test Protocol Details</h1><p><strong>Test Name:</strong> {{ test_protocol.test_name }}</p><p><strong>Protocol Number:</strong> {{ test_protocol.protocol_number }}</p><p><strong>Test Date:</strong> {{ test_protocol.test_date }}</p><p><strong>Test Subject:</strong> {{ test_protocol.test_subject }}</p><p><strong>Test Type:</strong> {{ test_protocol.test_type }}</p><p><strong>Test Method:</strong> {{ test_protocol.test_method }}</p><p><strong>Test Duration:</strong> {{ test_protocol.test_duration }}</p><p><strong>Responsible Person:</strong> {{ test_protocol.responsible_person }}</p><p><strong>Company:</strong> {{ test_protocol.company }}</p><p><strong>Bio:</strong> {{ test_protocol.bio }}</p><p><strong>Test Phase:</strong> {{ test_protocol.test_phase }}</p><p><strong>Test Results:</strong></p><p><strong>Efficacy:</strong> {{ test_protocol.test_results.efficacy }}</p><p><strong>Side Effects:</strong> {{ test_protocol.test_results.side_effects }}</p><p><strong>Control Group Results:</strong> {{ test_protocol.test_results.control_group_results }}</p><p><strong>Summary:</strong> {{ test_protocol.test_results.summary }}</p><p><strong>Test Location:</strong> {{ test_protocol.test_location }}</p><p><strong>Study Lead:</strong> {{ test_protocol.study_lead }}</p><p><strong>Ethics Approval Number:</strong> {{ test_protocol.ethics_approval_number }}</p></body></html>",
+      "created_at": "2024-12-05T10:30:45Z",
+      "updated_at": "2024-12-05T10:30:45Z"
+    }
+  }
+}
